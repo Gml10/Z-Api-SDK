@@ -2,7 +2,7 @@
 
 namespace ZapiSdk
 {
-    internal class Zapi : IZapi
+    internal class ZApi : IZApi
     {
         HttpClient _http { get; set; }
 
@@ -10,7 +10,7 @@ namespace ZapiSdk
         public IContacts Contacts { get; init; }
         public IInstance Instance { get; init; }
 
-        public Zapi(IHttpClientFactory httpClientFactory)
+        public ZApi(IHttpClientFactory httpClientFactory)
         {
             _http = httpClientFactory.CreateClient("DefaultZApiInstance");
 

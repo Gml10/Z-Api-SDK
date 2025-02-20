@@ -1,3 +1,7 @@
+using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
+
 namespace ZapiSdk.Models
 {
     public class SendAudioRequest

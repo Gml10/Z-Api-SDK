@@ -1,6 +1,6 @@
 ﻿namespace ZapiSdk.Contracts
 {
-    public interface IZapi
+    public interface IZApi
     {
         IMessages Messages { get; }
         IContacts Contacts { get; }

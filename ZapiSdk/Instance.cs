@@ -70,6 +70,8 @@ namespace ZapiSdk
             {
                 return valueElement.GetBoolean();
             }
+
+            throw new Exception("Failed to find 'value' property in the response content.");
         }
 
         public async Task Disconnect(string instanceId, string token)

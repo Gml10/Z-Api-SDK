@@ -15,6 +15,7 @@
     <PackageTags>whatsapp,zapi,wts,bot</PackageTags>
     <Product>Z-API SDK</Product>
     <AssemblyVersion>0.0.1</AssemblyVersion>
+    <Version>0.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
