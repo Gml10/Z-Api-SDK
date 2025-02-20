@@ -10,10 +10,10 @@
 
 <h2>Instalação</h2>
 <p>Para instalar via NuGet, use o seguinte comando:</p>
-<pre><code>NuGet\Install-Package ZapiSdk -Version 0.0.1</code></pre>
+<pre><code>NuGet\Install-Package ZapiSdk</code></pre>
 
 <p>No CLI use:</p>
-<pre><code>dotnet add package ZapiSdk --version 0.0.1</code></pre>
+<pre><code>dotnet add package ZapiSdk</code></pre>
 
 <h2>Configuração</h2>
 
