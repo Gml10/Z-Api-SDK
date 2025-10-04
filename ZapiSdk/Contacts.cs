@@ -1,18 +1,20 @@
 ﻿using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using ZapiSdk.Contracts;
-using ZapiSdk.Models;
+using ZApi.Contracts;
+using ZApi.Models;
 
 namespace ZapiSdk
 {
     internal class Contacts : IContacts
     {
         readonly HttpClient _http;
+        private readonly JsonSerializerOptions _jsonOptions;
 
-        public Contacts(HttpClient httpClient)
+        public Contacts(HttpClient httpClient, JsonSerializerOptions jsonSerializerOptions)
         {
             _http = httpClient;
+            _jsonOptions = jsonSerializerOptions;
         }
 
         public async Task<IEnumerable<ZapiContact>> GetContacts(int page, int pageSize)
@@ -25,7 +27,7 @@ namespace ZapiSdk
 
         public async Task<ZapiResponse> Add(IEnumerable<AddContactRequest> contacts)
         {
-            var body = new StringContent(JsonSerializer.Serialize(contacts), Encoding.UTF8, "application/json");
+            var body = new StringContent(JsonSerializer.Serialize(contacts, _jsonOptions), Encoding.UTF8, "application/json");
             using var response = await _http.PostAsync("contacts/add", body);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<ZapiResponse>()
@@ -34,7 +36,7 @@ namespace ZapiSdk
 
         public async Task<ZapiResponse> Remove(IEnumerable<string> phoneNumbers)
         {
-            var body = new StringContent(JsonSerializer.Serialize(phoneNumbers), Encoding.UTF8, "application/json");
+            var body = new StringContent(JsonSerializer.Serialize(phoneNumbers, _jsonOptions), Encoding.UTF8, "application/json");
             using var response = await _http.PostAsync("contacts/remove", body);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<ZapiResponse>()
@@ -81,7 +83,7 @@ namespace ZapiSdk
 
         public async Task<IEnumerable<PhonesExistsInBatch>> CheckIfExistsInBatch(string[] phones)
         {
-            var body = new StringContent(JsonSerializer.Serialize(phones), Encoding.UTF8, "application/json");
+            var body = new StringContent(JsonSerializer.Serialize(phones, _jsonOptions), Encoding.UTF8, "application/json");
             using var response = await _http.PostAsync("phone-exists-batch", body);
             response.EnsureSuccessStatusCode();
 
@@ -95,7 +97,7 @@ namespace ZapiSdk
             {
                 phones = request.Phone,
                 blocked = request.Action.ToString().ToLower()
-            }), Encoding.UTF8, "application/json");
+            }, _jsonOptions), Encoding.UTF8, "application/json");
 
             using var response = await _http.PostAsync("contacts/modify-blocked", body);
             response.EnsureSuccessStatusCode();
@@ -112,7 +114,7 @@ namespace ZapiSdk
 
         public async Task<ZapiResponse> Report(string phone)
         {
-            var body = new StringContent(JsonSerializer.Serialize(new { }), Encoding.UTF8, "application/json");
+            var body = new StringContent(JsonSerializer.Serialize(new { }, _jsonOptions), Encoding.UTF8, "application/json");
 
             using var response = await _http.PostAsync($"contacts/{phone}/report", body);
             response.EnsureSuccessStatusCode();

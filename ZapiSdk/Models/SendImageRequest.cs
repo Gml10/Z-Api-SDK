@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ZapiSdk.Models
+namespace ZApi.Models
 {
     public class SendImageRequest
     {

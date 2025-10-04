@@ -4,18 +4,19 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Title>Z-API SDK</Title>
+	 <PackageId>ZApi</PackageId>
+    <Title>Z-Api</Title>
     <Company>GAM Softwares</Company>
     <Authors>Gabriel Milhorini</Authors>
     <Description>Simple SDK to interact with WhatsApp automation services. The SDK integrates Z-Api services.</Description>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/Gml10/Z-Api-SDK</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Gml10/Z-Api-SDK</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>whatsapp,zapi,wts,bot</PackageTags>
-    <Product>Z-API SDK</Product>
-    <AssemblyVersion>0.0.1</AssemblyVersion>
-    <Version>0.0.1</Version>
+    <Product>Z-Api</Product>
+    <AssemblyVersion>0.0.4</AssemblyVersion>
+    <Version>0.0.4</Version>
   </PropertyGroup>
 
   <ItemGroup>

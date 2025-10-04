@@ -1,5 +1,12 @@
-namespace ZapiSdk.Models
+namespace ZApi.Models
 {
+    public enum LinkType
+    {
+        SMALL,
+        MEDIUM,
+        LARGE
+    }
+
     public class SendLinkRequest
     {
         /// <summary>
@@ -45,7 +52,7 @@ namespace ZapiSdk.Models
         /// <summary>
         /// Atributo utilizado para definir o tamanho da mensagem de visualização do link enviado (SMALL, MEDIUM ou LARGE). O tamanho default caso não seja informado é SMALL.
         /// </summary>
-        public string? LinkType { get; set; }
+        public LinkType? LinkType { get; set; }
     }
 }
 

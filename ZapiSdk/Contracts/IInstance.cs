@@ -1,6 +1,6 @@
-using ZapiSdk.Models;
+using ZApi.Models;
 
-namespace ZapiSdk.Contracts
+namespace ZApi.Contracts
 {
     public interface IInstance
     {

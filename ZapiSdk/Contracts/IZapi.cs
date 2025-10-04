@@ -1,4 +1,4 @@
-﻿namespace ZapiSdk.Contracts
+﻿namespace ZApi.Contracts
 {
     public interface IZApi
     {

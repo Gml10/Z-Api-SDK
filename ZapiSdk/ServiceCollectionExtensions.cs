@@ -1,15 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using ZApi.Contracts;
 
 namespace ZapiSdk
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddZapiInstance(this IServiceCollection services, Action<ZApiConfigure> configure)
+        public static IServiceCollection AddZapiInstance(this IServiceCollection services, Func<ZApiConfigure> configure)
         {
-            var config = new ZApiConfigure();
-            configure(config);
-
-            var baseUrl = string.Format("{0}/token/{1}/", config.BaseUrl, config.Instance, config.Token);
+            var config = configure();
+    
+            var baseUrl = string.Format("{0}{1}/token/{2}/", config.BaseUrl, config.Instance, config.Token);
 
             services.AddHttpClient("DefaultZApiInstance", client =>
             {
@@ -18,8 +18,10 @@ namespace ZapiSdk
              .ConfigureHttpClient((serviceProvider, client) =>
              {
                  if (!string.IsNullOrEmpty(config.Token))
-                     client.DefaultRequestHeaders.Add("Client-Token", config.Token);
+                     client.DefaultRequestHeaders.Add("Client-Token", config.Secret);
              });
+
+            services.AddScoped<IZApi, ZApi>();
 
             return services;
         }

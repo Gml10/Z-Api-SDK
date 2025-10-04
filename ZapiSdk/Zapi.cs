@@ -1,4 +1,6 @@
-﻿using ZapiSdk.Contracts;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using ZApi.Contracts;
 
 namespace ZapiSdk
 {
@@ -14,9 +16,15 @@ namespace ZapiSdk
         {
             _http = httpClientFactory.CreateClient("DefaultZApiInstance");
 
-            Messages = new Messages(_http);
-            Contacts = new Contacts(_http);
-            Instance = new Instance(_http);
+            var jsonSerializerOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            };
+
+            Messages = new Messages(_http, jsonSerializerOptions);
+            Contacts = new Contacts(_http, jsonSerializerOptions);
+            Instance = new Instance(_http, jsonSerializerOptions);
         }
     }
 }

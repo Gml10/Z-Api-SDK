@@ -1,4 +1,4 @@
-﻿namespace ZapiSdk.Models
+﻿namespace ZApi.Models
 {
     public class ZapiResponse
     {

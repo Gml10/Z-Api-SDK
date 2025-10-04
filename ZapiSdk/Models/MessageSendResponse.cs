@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ZapiSdk.Models
+﻿namespace ZApi.Models
 {
-    public class MessageSendResponse
+    public class MessageSendResponse : ZapiResponse
     {
         /// <summary>
         /// Adicionado para compatibilidade com zapier, ele tem o mesmo valor do messageId
