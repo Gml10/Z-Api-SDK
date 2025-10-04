@@ -27,7 +27,7 @@ jobs:
       - name: Read version from .csproj
         id: version
         run: |
-          VERSION=$(grep -oPm1 "(?<=<Version>)[^<]+" ZapiSdk/ZApi.csproj)
+          VERSION=$(grep -oPm1 "(?<=<Version>)[^<]+" ZApi/ZApi.csproj)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Project version: $VERSION"
           MAJOR=$(echo "$VERSION" | cut -d. -f1)
@@ -74,7 +74,7 @@ jobs:
           fi
       - name: dotnet pack
         if: steps.compare.outputs.publish == 'true'
-        run: dotnet pack ZapiSdk/ZApi.csproj --configuration Release --output ./nupkg
+        run: dotnet pack ZApi/ZApi.csproj --configuration Release --output ./nupkg
 
       - name: dotnet nuget push
         if: steps.compare.outputs.publish == 'true'
