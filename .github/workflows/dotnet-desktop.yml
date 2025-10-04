@@ -1,0 +1,87 @@
+name: Publish NuGet Package
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    env:
+      PACKAGE_NAME: Z-API.SDK
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Aux deps (jq, dpkg-dev)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq dpkg-dev
+      - name: Read version from .csproj
+        id: version
+        run: |
+          VERSION=$(grep -oPm1 "(?<=<Version>)[^<]+" ZapiSdk/ZApi.csproj)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Project version: $VERSION"
+          MAJOR=$(echo "$VERSION" | cut -d. -f1)
+          echo "major=$MAJOR" >> $GITHUB_OUTPUT
+          echo "Major: $MAJOR"
+      - name: Get published versions from NuGet (same major)
+        id: nuget
+        run: |
+          # pega lista de versões publicadas
+          ALL=$(curl -s https://api.nuget.org/v3-flatcontainer/${{ env.PACKAGE_NAME }}/index.json | jq -r '.versions[]' || true)
+          if [ -z "$ALL" ]; then
+            echo "No versions found on NuGet"
+            echo "latest_in_major=0.0.0" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          MAJOR="${{ steps.version.outputs.major }}"
+          # filtra apenas as do mesmo major (ex.: 1.*)
+          IN_MAJOR=$(printf "%s\n" $ALL | awk -v maj="$MAJOR" -F. '$1==maj')
+          if [ -z "$IN_MAJOR" ]; then
+            echo "No versions found in major $MAJOR on NuGet"
+            echo "latest_in_major=0.0.0" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          # encontra a maior versão dentro do major usando dpkg --compare-versions
+          LATEST="0.0.0"
+          while read -r V; do
+            if dpkg --compare-versions "$V" gt "$LATEST"; then
+              LATEST="$V"
+            fi
+          done <<< "$IN_MAJOR"
+          echo "Latest published in major $MAJOR: $LATEST"
+          echo "latest_in_major=$LATEST" >> $GITHUB_OUTPUT
+      - name: Compare versions within major
+        id: compare
+        run: |
+          LOCAL="${{ steps.version.outputs.version }}"
+          REMOTE="${{ steps.nuget.outputs.latest_in_major }}"
+          if dpkg --compare-versions "$LOCAL" gt "$REMOTE"; then
+            echo "publish=true" >> $GITHUB_OUTPUT
+            echo "Local $LOCAL > Remote $REMOTE (same major) -> will publish"
+          else
+            echo "publish=false" >> $GITHUB_OUTPUT
+            echo "Local $LOCAL <= Remote $REMOTE (same major) -> skip"
+          fi
+      - name: dotnet pack
+        if: steps.compare.outputs.publish == 'true'
+        run: dotnet pack ZapiSdk/ZApi.csproj --configuration Release --output ./nupkg
+
+      - name: dotnet nuget push
+        if: steps.compare.outputs.publish == 'true'
+        run: |
+          dotnet nuget push ./nupkg/*.nupkg \
+            --source https://api.nuget.org/v3/index.json \
+            --api-key oy2jcdyjaydnj4dfmota5c4c2pduiwwerli37iib5enaay
+      - name: No publish (already up-to-date in this major)
+        if: steps.compare.outputs.publish == 'false'
+        run: echo "A versão já foi publicada neste major. Nenhuma ação será tomada."
